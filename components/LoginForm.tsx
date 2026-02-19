@@ -211,7 +211,7 @@ export default function LoginForm() {
 
       {/* Sign Up Link */}
       <p className="text-center text-gray-600 text-sm mt-8">
-        Don't have an account?{' '}
+        Don&apos;t have an account?{' '}
         <button
           onClick={handleSignUp}
           className="text-blue-500 hover:text-blue-700 font-semibold transition"
