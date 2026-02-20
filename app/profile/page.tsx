@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Navigation from '@/components/Navigation';
 
 interface UserInfo {
   name: string;
@@ -75,18 +76,20 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-12">
-          <h1 className="text-4xl font-bold">Profile</h1>
-          <button
-            onClick={handleLogout}
-            className="px-6 py-2 border border-red-400 text-red-400 hover:bg-red-500/10 rounded-lg transition font-semibold"
-          >
-            Logout
-          </button>
-        </div>
+    <>
+      <Navigation />
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-12">
+            <h1 className="text-4xl font-bold">Profile</h1>
+            <button
+              onClick={handleLogout}
+              className="px-6 py-2 border border-red-400 text-red-400 hover:bg-red-500/10 rounded-lg transition font-semibold"
+            >
+              Logout
+            </button>
+          </div>
 
         {/* Tabs */}
         <div className="flex gap-4 mb-8 border-b border-white/20">
@@ -242,6 +245,6 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }

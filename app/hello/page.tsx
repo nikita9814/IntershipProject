@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Navigation from '@/components/Navigation';
 
 interface UserInfo {
   name: string;
@@ -96,7 +97,9 @@ export default function HelloPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+    <>
+      <Navigation />
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
       {/* Header */}
       <header className="bg-white/5 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -252,6 +255,7 @@ export default function HelloPage() {
           </div>
         </div>
       </main>
-    </div>
+      </div>
+    </>
   );
 }

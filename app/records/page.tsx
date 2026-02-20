@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Navigation from '@/components/Navigation';
 
 interface Record {
   id: number;
@@ -79,14 +80,16 @@ export default function RecordsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white pb-20">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
-        <h1 className="text-4xl font-bold mb-8">Medical Records</h1>
+    <>
+      <Navigation />
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white pb-20">
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          {/* Header */}
+          <h1 className="text-4xl font-bold mb-8">Medical Records</h1>
 
-        {/* Search Bar */}
-        <div className="mb-8">
-          <input
+          {/* Search Bar */}
+          <div className="mb-8">
+            <input
             type="text"
             placeholder="Search by doctor name or diagnosis..."
             value={searchQuery}
@@ -164,6 +167,6 @@ export default function RecordsPage() {
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 }

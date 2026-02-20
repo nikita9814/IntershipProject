@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Navigation from '@/components/Navigation';
 
 interface Doctor {
   id: number;
@@ -185,13 +186,15 @@ export default function AppointmentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
-      <div className="max-w-4xl mx-auto px-4 py-20">
-        {message && (
-          <div className="mb-8 p-4 bg-green-500/20 border border-green-400 rounded-lg text-green-300">
-            ✓ {message}
-          </div>
-        )}
+    <>
+      <Navigation />
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+        <div className="max-w-4xl mx-auto px-4 py-20">
+          {message && (
+            <div className="mb-8 p-4 bg-green-500/20 border border-green-400 rounded-lg text-green-300">
+              ✓ {message}
+            </div>
+          )}
 
         <h1 className="text-4xl font-bold mb-12">Your Appointments</h1>
 
@@ -265,6 +268,6 @@ export default function AppointmentPage() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
