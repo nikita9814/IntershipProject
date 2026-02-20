@@ -4,12 +4,14 @@ import { useState, FormEvent, ChangeEvent, useEffect } from 'react';
 
 interface OTPVerificationProps {
   mobileOrEmail: string;
-  onVerified: () => void;
+  userName: string;
+  onVerified: (userInfo: { name: string; contact: string }) => void;
   onBack: () => void;
 }
 
 export default function OTPVerification({
   mobileOrEmail,
+  userName,
   onVerified,
   onBack,
 }: OTPVerificationProps) {
@@ -112,7 +114,7 @@ export default function OTPVerification({
       setSuccess('OTP verified successfully!');
       
       setTimeout(() => {
-        onVerified();
+        onVerified({ name: userName, contact: mobileOrEmail });
       }, 1500);
     } catch (err) {
       setError('An error occurred. Please try again.');

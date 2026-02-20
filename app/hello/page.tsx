@@ -1,18 +1,24 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+interface UserInfo {
+  name: string;
+  contact: string;
+}
 
 interface Doctor {
   id: number;
   name: string;
   specialization: string;
-  availability: string;
-  time: string;
+  availability: string[];
+  slots: string[];
   rating: number;
   patients: string;
   experience: string;
   image: string;
   verified: boolean;
+  reviews: number;
 }
 
 const doctors: Doctor[] = [
@@ -20,57 +26,72 @@ const doctors: Doctor[] = [
     id: 1,
     name: 'Dr. Prakash Das',
     specialization: 'Psychologist',
-    availability: 'Available today',
-    time: '08:30 AM-07:00 PM',
+    availability: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    slots: ['08:30 AM', '09:00 AM', '02:00 PM', '03:00 PM', '07:00 PM'],
     rating: 4.8,
     patients: '5,000+',
     experience: '15+ years',
     image: '👨‍⚕️',
     verified: true,
+    reviews: 2456,
   },
   {
     id: 2,
-    name: 'Dr. Prakash Das',
-    specialization: 'Psychologist',
-    availability: 'Available today',
-    time: '08:30 AM-07:00 PM',
-    rating: 4.8,
-    patients: '5,000+',
-    experience: '15+ years',
+    name: 'Dr. Kumar Das',
+    specialization: 'Ophthalmologist',
+    availability: ['Monday', 'Wednesday', 'Friday', 'Saturday'],
+    slots: ['09:00 AM', '10:00 AM', '11:00 AM', '03:00 PM', '05:00 PM'],
+    rating: 4.9,
+    patients: '6,000+',
+    experience: '18+ years',
     image: '👨‍⚕️',
     verified: true,
+    reviews: 3120,
   },
   {
     id: 3,
-    name: 'Dr. Prakash Das',
-    specialization: 'Psychologist',
-    availability: 'Available today',
-    time: '08:30 AM-07:00 PM',
-    rating: 4.8,
-    patients: '5,000+',
-    experience: '15+ years',
-    image: '👨‍⚕️',
+    name: 'Dr. Neha Sharma',
+    specialization: 'Cardiologist',
+    availability: ['Tuesday', 'Thursday', 'Saturday', 'Sunday'],
+    slots: ['10:00 AM', '11:00 AM', '02:00 PM', '04:00 PM'],
+    rating: 4.7,
+    patients: '4,500+',
+    experience: '12+ years',
+    image: '👩‍⚕️',
     verified: true,
+    reviews: 1890,
   },
   {
     id: 4,
-    name: 'Dr. Prakash Das',
-    specialization: 'Psychologist',
-    availability: 'Available today',
-    time: '08:30 AM-07:00 PM',
-    rating: 4.8,
-    patients: '5,000+',
-    experience: '15+ years',
+    name: 'Dr. Rajesh Patel',
+    specialization: 'Dentist',
+    availability: ['Monday', 'Tuesday', 'Thursday', 'Friday'],
+    slots: ['09:00 AM', '10:00 AM', '02:00 PM', '03:00 PM', '04:00 PM'],
+    rating: 4.6,
+    patients: '3,800+',
+    experience: '10+ years',
     image: '👨‍⚕️',
     verified: true,
+    reviews: 1567,
   },
 ];
 
 export default function HelloPage() {
   const [selectedSpecialty, setSelectedSpecialty] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+
+  useEffect(() => {
+    // Get user info from localStorage
+    const stored = localStorage.getItem('userInfo');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      setUserInfo(parsed);
+    }
+  }, []);
 
   const handleLogout = () => {
+    localStorage.removeItem('userInfo');
     window.location.href = '/';
   };
 
@@ -98,7 +119,9 @@ export default function HelloPage() {
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Welcome Section */}
         <div className="mb-12">
-          <h2 className="text-4xl font-black mb-2">Hello, Priya</h2>
+          <h2 className="text-4xl font-black mb-2">
+            Hello, {userInfo?.name || 'Guest'}
+          </h2>
           <p className="text-gray-300">Trusted Member</p>
         </div>
 
@@ -145,7 +168,7 @@ export default function HelloPage() {
                 key={doctor.id}
                 className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:bg-white/15 transition group"
               >
-                <div className="flex items-start justify-between">
+                <div className="flex items-start justify-between mb-6">
                   <div className="flex items-start gap-6 flex-1">
                     {/* Doctor Image */}
                     <div className="text-6xl">{doctor.image}</div>
@@ -159,7 +182,12 @@ export default function HelloPage() {
                         )}
                       </div>
                       <p className="text-indigo-400 mb-1">{doctor.specialization}</p>
-                      <p className="text-green-400 text-sm mb-4">{doctor.availability}</p>
+
+                      {/* Rating and Reviews */}
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className="text-yellow-400">⭐ {doctor.rating}</span>
+                        <span className="text-gray-400">({doctor.reviews} reviews)</span>
+                      </div>
 
                       {/* Stats */}
                       <div className="grid grid-cols-3 gap-4 mb-4">
@@ -172,20 +200,26 @@ export default function HelloPage() {
                           <p className="text-white font-semibold">{doctor.experience}</p>
                         </div>
                         <div>
-                          <p className="text-gray-400 text-xs">Rating</p>
-                          <p className="text-white font-semibold">{doctor.rating}</p>
+                          <p className="text-gray-400 text-xs">Available Days</p>
+                          <p className="text-white font-semibold">{doctor.availability.length}/7</p>
                         </div>
                       </div>
 
-                      {/* Availability Time */}
-                      <p className="text-gray-400 text-sm">{doctor.time}</p>
+                      {/* Availability Details */}
+                      <div className="mb-4">
+                        <p className="text-gray-400 text-xs mb-2">📅 Available: {doctor.availability.join(', ')}</p>
+                        <p className="text-gray-400 text-xs">🕐 Time Slots: {doctor.slots.join(', ')}</p>
+                      </div>
                     </div>
                   </div>
 
                   {/* Action Button */}
-                  <button className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold rounded-lg hover:shadow-lg hover:shadow-indigo-500/50 transition group-hover:scale-105">
+                  <a
+                    href="/appointments"
+                    className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold rounded-lg hover:shadow-lg hover:shadow-indigo-500/50 transition group-hover:scale-105 whitespace-nowrap"
+                  >
                     Book Now
-                  </button>
+                  </a>
                 </div>
               </div>
             ))}
@@ -195,22 +229,26 @@ export default function HelloPage() {
         {/* Bottom Navigation */}
         <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20">
           <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-around">
-            <button className="flex flex-col items-center gap-2 text-indigo-400 group">
+            <a href="/hello" className="flex flex-col items-center gap-2 text-indigo-400 group hover:text-indigo-300">
               <span className="text-2xl">🏥</span>
-              <span className="text-xs font-semibold">Find a Doctor</span>
-            </button>
-            <button className="flex flex-col items-center gap-2 text-gray-400 hover:text-white group">
+              <span className="text-xs font-semibold">Find Doctor</span>
+            </a>
+            <a href="/appointments" className="flex flex-col items-center gap-2 text-gray-400 hover:text-white group">
               <span className="text-2xl">📅</span>
               <span className="text-xs font-semibold">Appointments</span>
-            </button>
-            <button className="flex flex-col items-center gap-2 text-gray-400 hover:text-white group">
+            </a>
+            <a href="/records" className="flex flex-col items-center gap-2 text-gray-400 hover:text-white group">
               <span className="text-2xl">📋</span>
               <span className="text-xs font-semibold">Records</span>
-            </button>
-            <button className="flex flex-col items-center gap-2 text-gray-400 hover:text-white group">
+            </a>
+            <a href="/profile" className="flex flex-col items-center gap-2 text-gray-400 hover:text-white group">
               <span className="text-2xl">👤</span>
               <span className="text-xs font-semibold">Profile</span>
-            </button>
+            </a>
+            <a href="/doctor-join" className="flex flex-col items-center gap-2 text-gray-400 hover:text-white group">
+              <span className="text-2xl">➕</span>
+              <span className="text-xs font-semibold">Join</span>
+            </a>
           </div>
         </div>
       </main>

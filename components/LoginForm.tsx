@@ -20,6 +20,7 @@ export default function LoginForm() {
   const [success, setSuccess] = useState('');
   const [step, setStep] = useState<'login' | 'otp'>('login');
   const [verifiedContact, setVerifiedContact] = useState('');
+  const [userName, setUserName] = useState('');
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -73,6 +74,17 @@ export default function LoginForm() {
 
       // Simulate sending OTP
       console.log('Sending OTP to:', formData.mobileOrEmail);
+      
+      // Extract a name from email or generate from number
+      let extractedName = 'User';
+      if (formData.mobileOrEmail.includes('@')) {
+        extractedName = formData.mobileOrEmail.split('@')[0];
+        extractedName = extractedName.charAt(0).toUpperCase() + extractedName.slice(1);
+      } else {
+        extractedName = 'Customer';
+      }
+      
+      setUserName(extractedName);
       setSuccess('OTP sent successfully! Check your email or SMS.');
       setVerifiedContact(formData.mobileOrEmail);
       
@@ -104,8 +116,11 @@ export default function LoginForm() {
     window.location.href = '/signup';
   };
 
-  const handleOTPVerified = () => {
+  const handleOTPVerified = (userInfo: { name: string; contact: string }) => {
     setSuccess('Login successful! Redirecting...');
+    // Store user info in localStorage
+    localStorage.setItem('userInfo', JSON.stringify(userInfo));
+    
     setTimeout(() => {
       // Redirect to home/dashboard
       window.location.href = '/hello';
@@ -125,6 +140,7 @@ export default function LoginForm() {
     return (
       <OTPVerification
         mobileOrEmail={verifiedContact}
+        userName={userName}
         onVerified={handleOTPVerified}
         onBack={handleBackToLogin}
       />
