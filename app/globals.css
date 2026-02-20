@@ -13,3 +13,20 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Select dropdown styling for dark mode */
+select {
+  color-scheme: dark;
+}
+
+select option {
+  background-color: #1f2937;
+  color: #ffffff;
+  padding: 8px;
+}
+
+select option:checked {
+  background-color: #4f46e5;
+  background-image: linear-gradient(#4f46e5, #4f46e5);
+  color: #ffffff;
+}
