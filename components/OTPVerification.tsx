@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent, ChangeEvent } from 'react';
+import { useState, FormEvent, ChangeEvent, useEffect } from 'react';
 
 interface OTPVerificationProps {
   mobileOrEmail: string;
@@ -18,11 +18,36 @@ export default function OTPVerification({
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [resendTimer, setResendTimer] = useState(0);
+  const [generatedOTP, setGeneratedOTP] = useState('');
+  const [showTestOTP, setShowTestOTP] = useState(false);
+  const [testOTPVisible, setTestOTPVisible] = useState(0);
 
   const isEmail = mobileOrEmail.includes('@');
   const maskedContact = isEmail
     ? mobileOrEmail.substring(0, 3) + '****' + mobileOrEmail.substring(mobileOrEmail.lastIndexOf('@') - 3)
     : mobileOrEmail.substring(0, 2) + '*****' + mobileOrEmail.substring(8);
+
+  // Generate OTP on component mount
+  useEffect(() => {
+    const newOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    setGeneratedOTP(newOTP);
+    console.log('Generated OTP for testing:', newOTP);
+    setShowTestOTP(true);
+    setTestOTPVisible(15); // Show for 15 seconds
+
+    const timer = setInterval(() => {
+      setTestOTPVisible((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setShowTestOTP(false);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   const handleOTPChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, '').slice(0, 6);
@@ -36,11 +61,15 @@ export default function OTPVerification({
     setSuccess('');
 
     try {
-      // Simulate sending OTP
-      console.log('Resending OTP to:', mobileOrEmail);
-      setSuccess('OTP sent successfully!');
+      // Generate new OTP
+      const newOTP = Math.floor(100000 + Math.random() * 900000).toString();
+      setGeneratedOTP(newOTP);
+      console.log('Resending OTP to:', mobileOrEmail, 'Test OTP:', newOTP);
+      setSuccess('OTP sent successfully! Check your email/SMS.');
       setOtp('');
       setResendTimer(60);
+      setShowTestOTP(true);
+      setTestOTPVisible(15);
 
       // Countdown timer
       const timer = setInterval(() => {
@@ -73,15 +102,20 @@ export default function OTPVerification({
         return;
       }
 
-      // Simulate OTP verification
-      console.log('Verifying OTP:', otp);
+      // Verify OTP matches the generated one
+      if (otp !== generatedOTP) {
+        setError('Invalid OTP. Please try again or request a new one.');
+        setLoading(false);
+        return;
+      }
+
       setSuccess('OTP verified successfully!');
       
       setTimeout(() => {
         onVerified();
       }, 1500);
     } catch (err) {
-      setError('Invalid OTP. Please try again.');
+      setError('An error occurred. Please try again.');
       console.error(err);
     } finally {
       setLoading(false);
@@ -125,6 +159,26 @@ export default function OTPVerification({
         </p>
       </div>
 
+      {/* Test OTP Display - For Development */}
+      {showTestOTP && testOTPVisible > 0 && (
+        <div className="mb-6 p-4 bg-blue-50/80 border border-blue-200 rounded-xl text-blue-800 text-sm font-medium backdrop-blur-sm animate-in fade-in slide-in-from-top">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs font-semibold mb-2">📝 Test OTP (Auto-hide in {testOTPVisible}s)</p>
+              <p className="text-2xl font-bold tracking-widest font-mono">{generatedOTP}</p>
+            </div>
+            <button
+              onClick={() => {
+                setOtp(generatedOTP);
+              }}
+              className="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-xs font-bold whitespace-nowrap ml-4"
+            >
+              Copy OTP
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Error Message */}
       {error && (
         <div className="mb-6 p-4 bg-red-50/80 border border-red-200 rounded-xl text-red-700 text-sm font-medium backdrop-blur-sm animate-in fade-in slide-in-from-top">
@@ -140,7 +194,12 @@ export default function OTPVerification({
         <div className="mb-6 p-4 bg-green-50/80 border border-green-200 rounded-xl text-green-700 text-sm font-medium backdrop-blur-sm animate-in fade-in slide-in-from-top">
           <div className="flex items-center gap-2">
             <span className="text-lg">✓</span>
-            {success}
+            <div>
+              {success}
+              {generatedOTP && (
+                <p className="text-xs mt-2 font-mono bg-white/40 px-2 py-1 rounded mt-1">OTP: {generatedOTP}</p>
+              )}
+            </div>
           </div>
         </div>
       )}
