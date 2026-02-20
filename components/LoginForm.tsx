@@ -3,14 +3,14 @@
 import { useState, FormEvent, ChangeEvent } from 'react';
 
 interface FormData {
-  email: string;
+  mobileOrEmail: string;
   password: string;
   rememberMe: boolean;
 }
 
 export default function LoginForm() {
   const [formData, setFormData] = useState<FormData>({
-    email: '',
+    mobileOrEmail: '',
     password: '',
     rememberMe: false,
   });
@@ -20,9 +20,17 @@ export default function LoginForm() {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
+    
+    // For mobileOrEmail field, filter out non-numeric characters for display validation
+    let finalValue = value;
+    if (name === 'mobileOrEmail') {
+      // Allow only alphanumeric, @, and dots for email, or digits for mobile
+      finalValue = value.replace(/[^\w@.-]/g, '');
+    }
+    
     setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === 'checkbox' ? checked : finalValue,
     }));
     setError('');
   };
@@ -35,24 +43,35 @@ export default function LoginForm() {
 
     try {
       // Validate form
-      if (!formData.email || !formData.password) {
-        setError('Please fill in all fields');
+      if (!formData.mobileOrEmail || !formData.password) {
+        setError('Please enter mobile/email and password');
         setLoading(false);
         return;
       }
 
-      // Email validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const mobileRegex = /^\d{10}$/;
-      if (!emailRegex.test(formData.email) && !mobileRegex.test(formData.email)) {
-        setError('Please enter a valid email address / mobile number');
+      // Check if it's a mobile number or email
+      const mobileRegex = /^[0-9]{10}$/;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/; // Must have @ and domain extension
+      const input = formData.mobileOrEmail.replace(/\D/g, '');
+
+      // Check if it's valid mobile (exactly 10 digits)
+      const isMobile = mobileRegex.test(input);
+      // Check if it's valid email (must contain @ and proper domain)
+      const isEmail = emailRegex.test(formData.mobileOrEmail);
+
+      if (!isMobile && !isEmail) {
+        if (formData.mobileOrEmail.includes('@')) {
+          setError('Please enter a valid email (e.g., user@example.com)');
+        } else {
+          setError('Please enter a valid 10-digit mobile number or email address');
+        }
         setLoading(false);
         return;
       }
 
       // Simulate API call
       console.log('Login attempt:', {
-        email: formData.email,
+        mobileOrEmail: formData.mobileOrEmail,
         password: formData.password,
         rememberMe: formData.rememberMe,
       });
@@ -133,18 +152,18 @@ export default function LoginForm() {
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Email Input */}
+        {/* Email/Mobile Input */}
         <div>
-          <label htmlFor="email" className="block text-sm font-semibold text-gray-800 mb-3">
-            Email Address
+          <label htmlFor="mobileOrEmail" className="block text-sm font-semibold text-gray-800 mb-3">
+            Mobile or Email
           </label>
           <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
+            type="text"
+            id="mobileOrEmail"
+            name="mobileOrEmail"
+            value={formData.mobileOrEmail}
             onChange={handleChange}
-            placeholder="you@example.com"
+            placeholder="Enter 10-digit mobile or email"
             className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition placeholder-gray-400 bg-gray-50/50 hover:bg-gray-50 text-gray-900"
           />
         </div>
@@ -204,19 +223,19 @@ export default function LoginForm() {
       </form>
 
       {/* Divider */}
-      <div className="flex items-center my-8">
-        <div className="flex-1 border-t border-gray-200"></div>
-        <span className="px-4 text-gray-500 text-xs font-medium uppercase tracking-wide">Or continue with</span>
-        <div className="flex-1 border-t border-gray-200"></div>
+      <div className="flex items-center my-6">
+        <div className="flex-1 border-t border-gray-300"></div>
+        <span className="px-4 text-gray-500 text-sm">Or login with</span>
+        <div className="flex-1 border-t border-gray-300"></div>
       </div>
 
       {/* Google Login Button */}
       <button
         onClick={handleGoogleLogin}
-        className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50/50 transition font-semibold text-gray-700 hover:text-gray-900 group"
+        className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium text-gray-700"
       >
         <svg
-          className="w-5 h-5 group-hover:scale-110 transition-transform"
+          className="w-5 h-5"
           viewBox="0 0 24 24"
           fill="currentColor"
         >
@@ -225,15 +244,15 @@ export default function LoginForm() {
           <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
           <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
         </svg>
-        Google
+        Continue with Google
       </button>
 
       {/* Sign Up Link */}
-      <p className="text-center text-gray-600 text-sm mt-10">
-        <span className="text-gray-500">Don&apos;t have an account?</span>
+      <p className="text-center text-gray-600 text-sm mt-8">
+        Don&apos;t have an account?{' '}
         <button
           onClick={handleSignUp}
-          className="ml-2 text-indigo-600 hover:text-indigo-700 font-bold transition hover:underline"
+          className="text-blue-500 hover:text-blue-700 font-semibold transition"
         >
           Sign Up
         </button>
