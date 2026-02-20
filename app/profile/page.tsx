@@ -53,12 +53,12 @@ export default function ProfilePage() {
   }, []);
 
   const handleUpdateName = () => {
-    if (!editName.trim()) {
+    if (!editName.trim() || !userInfo) {
       alert('Name cannot be empty');
       return;
     }
 
-    const updated = { ...userInfo, name: editName };
+    const updated: UserInfo = { ...userInfo, name: editName };
     localStorage.setItem('userInfo', JSON.stringify(updated));
     setUserInfo(updated);
     setEditMode(false);
