@@ -153,7 +153,7 @@ export default function LoginForm() {
       <div className="flex justify-center mb-10">
         <div className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-full p-1 w-20 h-20 flex items-center justify-center transform transition-transform hover:scale-110">
           <div className="bg-white rounded-full w-full h-full flex items-center justify-center">
-            <span className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Y</span>
+            <span className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Care</span>
           </div>
         </div>
       </div>
