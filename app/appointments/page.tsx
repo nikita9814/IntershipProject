@@ -411,6 +411,7 @@ export default function AppointmentPage() {
                   <select
                     value={patientDetails.gender}
                     onChange={(e) => handlePatientDetailsChange('gender', e.target.value)}
+                    style={{ colorScheme: 'dark' }}
                     className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   >
                     <option value="">Select Gender</option>
@@ -463,6 +464,7 @@ export default function AppointmentPage() {
                 <select
                   value={patientDetails.relationship}
                   onChange={(e) => handlePatientDetailsChange('relationship', e.target.value)}
+                  style={{ colorScheme: 'dark' }}
                   className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="">Select Relationship</option>
