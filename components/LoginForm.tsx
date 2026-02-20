@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, FormEvent, ChangeEvent } from 'react';
+import OTPVerification from './OTPVerification';
 
 interface FormData {
   mobileOrEmail: string;
@@ -17,6 +18,8 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [step, setStep] = useState<'login' | 'otp'>('login');
+  const [verifiedContact, setVerifiedContact] = useState('');
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -68,25 +71,14 @@ export default function LoginForm() {
         return;
       }
 
-      // Simulate API call
-      console.log('Login attempt:', {
-        mobileOrEmail: formData.mobileOrEmail,
-        password: formData.password,
-        rememberMe: formData.rememberMe,
-      });
-
-      // Here you would typically make an API call to your backend
-      // const response = await fetch('/api/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData),
-      // });
-
-      // Simulated success response
-      setSuccess('Login successful! Redirecting...');
+      // Simulate sending OTP
+      console.log('Sending OTP to:', formData.mobileOrEmail);
+      setSuccess('OTP sent successfully! Check your email or SMS.');
+      setVerifiedContact(formData.mobileOrEmail);
+      
       setTimeout(() => {
-        // Redirect to dashboard or home page
-        window.location.href = '/dashboard';
+        setStep('otp');
+        setSuccess('');
       }, 1500);
     } catch (err) {
       setError('An error occurred. Please try again.');
@@ -111,6 +103,33 @@ export default function LoginForm() {
   const handleSignUp = () => {
     window.location.href = '/signup';
   };
+
+  const handleOTPVerified = () => {
+    setSuccess('Login successful! Redirecting...');
+    setTimeout(() => {
+      // Redirect to home/dashboard
+      window.location.href = '/hello';
+    }, 1500);
+  };
+
+  const handleBackToLogin = () => {
+    setStep('login');
+    setVerifiedContact('');
+    setFormData({ ...formData, mobileOrEmail: '', password: '' });
+    setError('');
+    setSuccess('');
+  };
+
+  // Show OTP verification screen if step is 'otp'
+  if (step === 'otp' && verifiedContact) {
+    return (
+      <OTPVerification
+        mobileOrEmail={verifiedContact}
+        onVerified={handleOTPVerified}
+        onBack={handleBackToLogin}
+      />
+    );
+  }
 
   return (
     <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-8 sm:p-10 md:p-12 border border-white/20 max-w-md w-full">
