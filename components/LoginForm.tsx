@@ -21,11 +21,10 @@ export default function LoginForm() {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     
-    // For mobileOrEmail field, filter out non-numeric characters for display validation
     let finalValue = value;
     if (name === 'mobileOrEmail') {
-      // Allow only alphanumeric, @, and dots for email, or digits for mobile
-      finalValue = value.replace(/[^\w@.-]/g, '');
+      // Allow alphanumeric, @, dots, hyphens, and underscores for emails and mobile
+      finalValue = value.replace(/[^\w@.\-]/g, '');
     }
     
     setFormData((prev) => ({
@@ -223,19 +222,19 @@ export default function LoginForm() {
       </form>
 
       {/* Divider */}
-      <div className="flex items-center my-6">
-        <div className="flex-1 border-t border-gray-300"></div>
-        <span className="px-4 text-gray-500 text-sm">Or login with</span>
-        <div className="flex-1 border-t border-gray-300"></div>
+      <div className="flex items-center my-8">
+        <div className="flex-1 border-t border-gray-200"></div>
+        <span className="px-4 text-gray-500 text-xs font-medium uppercase tracking-wide">Or continue with</span>
+        <div className="flex-1 border-t border-gray-200"></div>
       </div>
 
       {/* Google Login Button */}
       <button
         onClick={handleGoogleLogin}
-        className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium text-gray-700"
+        className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50/50 transition font-semibold text-gray-700 hover:text-gray-900 group"
       >
         <svg
-          className="w-5 h-5"
+          className="w-5 h-5 group-hover:scale-110 transition-transform"
           viewBox="0 0 24 24"
           fill="currentColor"
         >
@@ -244,15 +243,15 @@ export default function LoginForm() {
           <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
           <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
         </svg>
-        Continue with Google
+        Google
       </button>
 
       {/* Sign Up Link */}
-      <p className="text-center text-gray-600 text-sm mt-8">
-        Don&apos;t have an account?{' '}
+      <p className="text-center text-gray-600 text-sm mt-10">
+        <span className="text-gray-500">Don&apos;t have an account?</span>
         <button
           onClick={handleSignUp}
-          className="text-blue-500 hover:text-blue-700 font-semibold transition"
+          className="ml-2 text-indigo-600 hover:text-indigo-700 font-bold transition hover:underline"
         >
           Sign Up
         </button>
