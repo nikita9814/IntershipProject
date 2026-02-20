@@ -68,14 +68,10 @@ export default function RecordsPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'normal':
-        return 'bg-green-500/20 text-green-400';
-      case 'follow-up-needed':
-        return 'bg-yellow-500/20 text-yellow-400';
-      case 'urgent':
-        return 'bg-red-500/20 text-red-400';
-      default:
-        return 'bg-blue-500/20 text-blue-400';
+      case 'normal': return 'bg-green-500/20 text-green-400';
+      case 'follow-up-needed': return 'bg-yellow-500/20 text-yellow-400';
+      case 'urgent': return 'bg-red-500/20 text-red-400';
+      default: return 'bg-blue-500/20 text-blue-400';
     }
   };
 
@@ -84,87 +80,81 @@ export default function RecordsPage() {
       <Navigation />
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white pb-20">
         <div className="max-w-4xl mx-auto px-4 py-8">
-          {/* Header */}
+          
           <h1 className="text-4xl font-bold mb-8">Medical Records</h1>
 
           {/* Search Bar */}
           <div className="mb-8">
             <input
-            type="text"
-            placeholder="Search by doctor name or diagnosis..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-6 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
+              type="text"
+              placeholder="Search by doctor name or diagnosis..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-6 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
 
-        {/* Filter Buttons */}
-        <div className="flex gap-4 mb-8 overflow-x-auto pb-4">
-          {(['all', 'normal', 'follow-up-needed', 'urgent'] as const).map((status) => (
-            <button
-              key={status}
-              onClick={() => setFilter(status)}
-              className={`px-6 py-2 rounded-full font-semibold whitespace-nowrap transition ${
-                filter === status
-                  ? 'bg-indigo-500 text-white'
-                  : 'bg-white/10 text-gray-300 hover:bg-white/20'
-              }`}
-            >
-              {status === 'all' ? 'All' : status.replace('-', ' ').charAt(0).toUpperCase() + status.slice(1)}
-            </button>
-          ))}
-        </div>
-
-        {/* Records List */}
-        <div className="space-y-6">
-          {filteredRecords.length > 0 ? (
-            filteredRecords.map((record) => (
-              <div
-                key={record.id}
-                className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:bg-white/15 transition"
+          {/* Filter Buttons */}
+          <div className="flex gap-4 mb-8 overflow-x-auto pb-4">
+            {(['all', 'normal', 'follow-up-needed', 'urgent'] as const).map((status) => (
+              <button
+                key={status}
+                onClick={() => setFilter(status)}
+                className={`px-6 py-2 rounded-full font-semibold transition ${
+                  filter === status ? 'bg-indigo-500 text-white' : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                }`}
               >
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-2xl font-bold mb-2">{record.doctorName}</h3>
-                    <p className="text-indigo-400 mb-2">{record.specialization}</p>
-                    <p className="text-gray-400">📅 {record.date}</p>
-                  </div>
-                  <div className="text-right">
-                    <span className={`inline-block px-4 py-2 rounded-lg text-sm font-bold ${getStatusColor(record.status)}`}>
-                      {record.status === 'normal'
-                        ? '✓ Normal'
-                        : record.status === 'follow-up-needed'
-                        ? '⚠ Follow-up'
-                        : '🚨 Urgent'}
+                {status === 'all' ? 'All' : status.replace('-', ' ').charAt(0).toUpperCase() + status.slice(1)}
+              </button>
+            ))}
+          </div>
+
+          {/* Records List */}
+          <div className="space-y-6">
+            {filteredRecords.length > 0 ? (
+              filteredRecords.map((record) => (
+                <div
+                  key={record.id}
+                  className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:bg-white/15 transition"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 className="text-2xl font-bold mb-2">{record.doctorName}</h3>
+                      <p className="text-indigo-400 mb-2">{record.specialization}</p>
+                      <p className="text-gray-400">📅 {record.date}</p>
+                    </div>
+                    <span className={`px-4 py-2 rounded-lg text-sm font-bold ${getStatusColor(record.status)}`}>
+                      {record.status === 'normal' ? '✓ Normal' : record.status === 'follow-up-needed' ? '⚠ Follow-up' : '🚨 Urgent'}
                     </span>
                   </div>
-                </div>
 
-                <div className="bg-white/10 rounded-lg p-4 mb-4">
-                  <p className="text-gray-400 text-sm mb-2">Consultation Type</p>
-                  <p className="text-white font-semibold">{record.type}</p>
-                </div>
+                  <div className="grid md:grid-cols-2 gap-4 mb-6">
+                    <div className="bg-white/5 rounded-lg p-4">
+                      <p className="text-gray-400 text-xs uppercase mb-1">Type</p>
+                      <p className="font-semibold">{record.type}</p>
+                    </div>
+                    <div className="bg-white/5 rounded-lg p-4">
+                      <p className="text-gray-400 text-xs uppercase mb-1">Diagnosis</p>
+                      <p className="font-semibold">{record.diagnosis}</p>
+                    </div>
+                  </div>
 
-                <div className="bg-white/10 rounded-lg p-4 mb-4">
-                  <p className="text-gray-400 text-sm mb-2">Diagnosis / Findings</p>
-                  <p className="text-white">{record.diagnosis}</p>
+                  <div className="flex gap-4">
+                    <button className="flex-1 px-6 py-2 bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/40 rounded-lg transition font-semibold">
+                      View Details
+                    </button>
+                    <button className="flex-1 px-6 py-2 bg-purple-500/20 text-purple-400 hover:bg-purple-500/40 rounded-lg transition font-semibold">
+                      Download PDF
+                    </button>
+                  </div>
                 </div>
-
-                <div className="flex gap-4">
-                  <button className="flex-1 px-6 py-2 bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30 rounded-lg transition font-semibold">
-                    View Details
-                  </button>
-                  <button className="flex-1 px-6 py-2 bg-purple-500/20 text-purple-400 hover:bg-purple-500/30 rounded-lg transition font-semibold">
-                    Download PDF
-                  </button>
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-20 bg-white/5 rounded-2xl border border-dashed border-white/20">
+                <p className="text-gray-400 text-lg">No records matching your search</p>
               </div>
-            ))
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-gray-400 text-lg">No records found</p>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </>

@@ -100,23 +100,23 @@ export default function HelloPage() {
     <>
       <Navigation />
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
-      {/* Header */}
-      <header className="bg-white/5 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full p-2 w-10 h-10 flex items-center justify-center">
-              <span className="text-lg font-bold">Y</span>
+        {/* Header */}
+        <header className="bg-white/5 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full p-2 w-10 h-10 flex items-center justify-center">
+                <span className="text-lg font-bold">Y</span>
+              </div>
+              <h1 className="text-2xl font-bold">HealthCare</h1>
             </div>
-            <h1 className="text-2xl font-bold">HealthCare</h1>
+            <button
+              onClick={handleLogout}
+              className="px-6 py-2 border border-red-400 text-red-400 hover:bg-red-500/10 rounded-lg transition font-semibold"
+            >
+              Logout
+            </button>
           </div>
-          <button
-            onClick={handleLogout}
-            className="px-6 py-2 border border-red-400 text-red-400 hover:bg-red-500/10 rounded-lg transition font-semibold"
-          >
-            Logout
-          </button>
-        </div>
-      </header>
+        </header>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-8">
